@@ -71,7 +71,7 @@ sequenceDiagram
     participant R as Receiver thread 接收线程
     participant Res as results (mutex) 结果表
 
-    S->>Map: lock map_mu; seq_map[seq] = Probe(ttl, attempt, now)
+    S->>Map: lock map_mu, seq_map[seq] = Probe(ttl, attempt, now)
     S->>Map: cv.notify_all()
     S->>Net: sendto ICMP Echo Request (TTL=ttl)
     Net->>Rt: IP packet, TTL decremented each hop
@@ -79,10 +79,10 @@ sequenceDiagram
     Net-->>R: recvfrom()
     R->>R: locate_icmp_offset(): parse IPv4/IPv6 + ICMP header
     R->>R: if Time Exceeded, unwrap quoted original packet to recover seq
-    R->>Map: lock map_mu; find & erase seq_map[seq]
+    R->>Map: lock map_mu, find & erase seq_map[seq]
     Map-->>R: Probe(ttl, attempt, send_time)
     R->>R: rtt_ms = now - send_time
-    R->>Res: lock results_mu; results[ttl-1][attempt] = Result(...)
+    R->>Res: lock results_mu, results[ttl-1][attempt] = Result(...)
     R->>Map: cv.notify_all()
 ```
 
@@ -226,7 +226,7 @@ sequenceDiagram
     participant R as Receiver thread 接收线程
     participant Res as results (mutex) 结果表
 
-    S->>Map: lock map_mu; seq_map[seq] = Probe(ttl, attempt, now)
+    S->>Map: lock map_mu, seq_map[seq] = Probe(ttl, attempt, now)
     S->>Map: cv.notify_all()
     S->>Net: sendto ICMP Echo Request (TTL=ttl)
     Net->>Rt: IP packet, TTL decremented each hop
@@ -234,10 +234,10 @@ sequenceDiagram
     Net-->>R: recvfrom()
     R->>R: locate_icmp_offset(): parse IPv4/IPv6 + ICMP header
     R->>R: if Time Exceeded, unwrap quoted original packet to recover seq
-    R->>Map: lock map_mu; find & erase seq_map[seq]
+    R->>Map: lock map_mu, find & erase seq_map[seq]
     Map-->>R: Probe(ttl, attempt, send_time)
     R->>R: rtt_ms = now - send_time
-    R->>Res: lock results_mu; results[ttl-1][attempt] = Result(...)
+    R->>Res: lock results_mu, results[ttl-1][attempt] = Result(...)
     R->>Map: cv.notify_all()
 ```
 
